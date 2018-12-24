@@ -107,3 +107,20 @@ function add_review($dbc, $author, $initials, $good_side, $bad_side) {
 	$statement = $dbc->prepare($sql);
 	$statement->execute(array($author, $initials, $good_side, $bad_side, time()));	
 }
+
+function show_search_results($dbc, $search) {
+	$search = '%' . $search . '%';
+	$sql = "SELECT * FROM reviews WHERE instructor_initials LIKE ?";
+
+	$statement = $dbc->prepare($sql);
+	$statement->execute(array($search));
+
+	while ($result = $statement->fetch()){
+		$good_part = $result['good_part'];
+		$bad_part = $result['bad_part'];
+		$initials = $result['instructor_initials'];
+		$review_id = $result['id'];
+
+		include('review.php');
+	}	
+}
